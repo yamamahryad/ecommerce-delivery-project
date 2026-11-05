@@ -71,3 +71,5 @@ Raw files in `data/raw` are never modified; all processed files are produced by 
 - Item, payment and estimated-date details are assumed available at approval time (brief's assumption).
 - The selection of eligible orders (delivered only) biases the latest months.
 - The test period is only 3 months with a lower late rate than training.
+- GitHub Repository Link: https://github.com/yamamahryad/ecommerce-delivery-project
+Reviewed by: yamamahryad
