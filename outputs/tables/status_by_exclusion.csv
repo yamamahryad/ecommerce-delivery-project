@@ -1,0 +1,9 @@
+﻿order_status,approval_after_delivery,delivered_without_customer_date,eligible,estimated_before_approval,missing_approval_date,no_payment_record,not_delivered_status
+approved,0,0,0,0,0,0,2
+canceled,0,0,0,0,0,0,625
+created,0,0,0,0,0,0,5
+delivered,61,8,96393,1,14,1,0
+invoiced,0,0,0,0,0,0,314
+processing,0,0,0,0,0,0,301
+shipped,0,0,0,0,0,0,1107
+unavailable,0,0,0,0,0,0,609

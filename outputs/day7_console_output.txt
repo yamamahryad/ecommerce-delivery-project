@@ -1,0 +1,83 @@
+﻿
+====================================================================================================
+1) Temporal split by order_approved_at (test = newest period, untouched today)
+====================================================================================================
+split  orders  share_pct       approved_from         approved_to  late_orders  late_rate_pct
+train   67475       70.0 2016-10-04 09:43:32 2018-04-15 23:50:13         5285          7.833
+  val   14458       15.0 2018-04-16 00:13:18 2018-06-21 09:43:02          628          4.344
+ test   14460       15.0 2018-06-21 09:43:03 2018-08-29 15:10:26          618          4.274
+
+====================================================================================================
+2) Months inside each split (distribution shift)
+====================================================================================================
+approval_month split  orders  late  late_rate_pct
+       2016-10 train     265     2           0.75
+       2016-12 train       1     0           0.00
+       2017-01 train     715    21           2.94
+       2017-02 train    1638    46           2.81
+       2017-03 train    2553   118           4.62
+       2017-04 train    2278   149           6.54
+       2017-05 train    3547   108           3.04
+       2017-06 train    3143    95           3.02
+       2017-07 train    3827   107           2.80
+       2017-08 train    4217   121           2.87
+       2017-09 train    4162   183           4.40
+       2017-10 train    4441   184           4.14
+       2017-11 train    7149   874          12.23
+       2017-12 train    5675   446           7.86
+       2018-01 train    6991   397           5.68
+       2018-02 train    6534   890          13.62
+       2018-03 train    7083  1360          19.20
+       2018-04 train    3256   184           5.65
+       2018-04   val    3368   122           3.62
+       2018-05   val    6940   454           6.54
+       2018-06   val    4150    52           1.25
+       2018-06  test    1944    19           0.98
+       2018-07  test    6021   193           3.21
+       2018-08  test    6495   406           6.25
+
+Training and comparing candidates (HistGradientBoosting takes a few minutes)...
+
+====================================================================================================
+3) Experiment log: all candidates, scored on VALIDATION only
+====================================================================================================
+                 model                                                     settings  val_average_precision  val_roc_auc  ap_lift  train_average_precision  fit_seconds  selected
+        baseline_prior                                               strategy=prior                 0.0434       0.5000    1.000                   0.0783          0.3      True
+   logistic_regression                                    C=0.01, class_weight=None                 0.1157       0.7557    2.664                   0.1918          0.8     False
+   logistic_regression                                C=0.01, class_weight=balanced                 0.1149       0.7590    2.646                   0.1889          0.8     False
+   logistic_regression                                     C=0.1, class_weight=None                 0.1263       0.7705    2.909                   0.2018          1.1     False
+   logistic_regression                                 C=0.1, class_weight=balanced                 0.1192       0.7653    2.744                   0.1930          1.2     False
+   logistic_regression                                     C=1.0, class_weight=None                 0.1280       0.7725    2.947                   0.2024          1.2     False
+   logistic_regression                                 C=1.0, class_weight=balanced                 0.1197       0.7659    2.755                   0.1932          1.3     False
+   logistic_regression                                    C=10.0, class_weight=None                 0.1286       0.7731    2.960                   0.2022          1.1      True
+   logistic_regression                                C=10.0, class_weight=balanced                 0.1197       0.7656    2.755                   0.1932          1.5     False
+hist_gradient_boosting     learning_rate=0.05, max_leaf_nodes=15, class_weight=None                 0.1007       0.7136    2.318                   0.3500          2.9     False
+hist_gradient_boosting learning_rate=0.05, max_leaf_nodes=15, class_weight=balanced                 0.1050       0.7124    2.417                   0.3226          4.1      True
+hist_gradient_boosting     learning_rate=0.05, max_leaf_nodes=31, class_weight=None                 0.0984       0.7024    2.266                   0.4238          3.5     False
+hist_gradient_boosting learning_rate=0.05, max_leaf_nodes=31, class_weight=balanced                 0.0971       0.6933    2.236                   0.3704          4.5     False
+hist_gradient_boosting      learning_rate=0.1, max_leaf_nodes=15, class_weight=None                 0.0958       0.7065    2.205                   0.4021          2.3     False
+hist_gradient_boosting  learning_rate=0.1, max_leaf_nodes=15, class_weight=balanced                 0.1037       0.7062    2.388                   0.3595          3.8     False
+hist_gradient_boosting      learning_rate=0.1, max_leaf_nodes=31, class_weight=None                 0.0932       0.6958    2.145                   0.5244          3.2     False
+hist_gradient_boosting  learning_rate=0.1, max_leaf_nodes=31, class_weight=balanced                 0.0992       0.6803    2.283                   0.4520          4.6     False
+
+====================================================================================================
+4) Selected setting per model
+====================================================================================================
+                 model                                                     settings  val_average_precision  ap_lift
+        baseline_prior                                               strategy=prior                 0.0434    1.000
+   logistic_regression                                    C=10.0, class_weight=None                 0.1286    2.960
+hist_gradient_boosting learning_rate=0.05, max_leaf_nodes=15, class_weight=balanced                 0.1050    2.417
+
+====================================================================================================
+5) Imputation statistics come from TRAIN only
+====================================================================================================
+                   feature  median_learned_from_train  median_of_all_eligible_orders
+              planned_days                     24.000                         23.000
+           items_price_sum                     85.000                         86.600
+purchase_to_approval_hours                      0.307                          0.343
+              log_weight_g                      6.686                          6.621
+
+Reference: the baseline AP on validation equals the validation late rate (4.344%).
+
+Done. Models saved in data/processed/models, validation predictions in data/processed/val_predictions.csv.
+The final test set was NOT used.

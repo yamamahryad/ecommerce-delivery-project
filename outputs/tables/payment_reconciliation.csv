@@ -1,0 +1,6 @@
+﻿measure,value
+orders compared (have items and payments),98665.0
+difference <= 0.01,98276.0
+difference between 0.01 and 1.00,140.0
+difference > 1.00,249.0
+max absolute difference,182.81

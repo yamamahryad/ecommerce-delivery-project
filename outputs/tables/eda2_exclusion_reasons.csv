@@ -1,0 +1,7 @@
+﻿reason,n_orders,pct_of_all_orders
+not_delivered_status,2963,2.98
+approval_after_delivery,61,0.061
+missing_approval_date,14,0.014
+delivered_without_customer_date,8,0.008
+no_payment_record,1,0.001
+estimated_before_approval,1,0.001

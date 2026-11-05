@@ -1,0 +1,8 @@
+﻿table,rows_before,columns_before,missing_cells_before,rows_after,columns_after,missing_cells_after,rows_removed,missing_change
+orders,99441,8,4908,99441,8,4908,0,0
+customers,99441,5,0,99441,5,0,0,0
+order_items,112650,7,0,112650,7,0,0,0
+payments,103886,5,0,103886,5,0,0,0
+products,32951,9,2448,32951,10,1842,0,-606
+sellers,3095,4,0,3095,4,0,0,0
+category_translation,71,2,0,71,2,0,0,0

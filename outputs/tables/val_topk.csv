@@ -1,0 +1,11 @@
+﻿flagged_share_pct,orders_flagged,late_caught,precision_pct,recall_pct,lift,model
+2.0,289,51,17.65,8.12,4.06,logistic_regression
+5.0,723,134,18.53,21.34,4.27,logistic_regression
+10.0,1446,215,14.87,34.24,3.42,logistic_regression
+20.0,2892,344,11.89,54.78,2.74,logistic_regression
+30.0,4337,432,9.96,68.79,2.29,logistic_regression
+2.0,289,48,16.61,7.64,3.82,hist_gradient_boosting
+5.0,723,102,14.11,16.24,3.25,hist_gradient_boosting
+10.0,1446,166,11.48,26.43,2.64,hist_gradient_boosting
+20.0,2892,270,9.34,42.99,2.15,hist_gradient_boosting
+30.0,4337,373,8.6,59.39,1.98,hist_gradient_boosting

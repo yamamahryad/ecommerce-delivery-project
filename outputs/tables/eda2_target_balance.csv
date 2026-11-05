@@ -1,0 +1,8 @@
+﻿measure,value
+eligible orders,96393.0
+on time (is_late = 0),89862.0
+late (is_late = 1),6531.0
+late share (%),6.775
+imbalance ratio (on time : late),13.76
+accuracy of always predicting 'on time' (%),93.225
+recall for the late class of that rule (%),0.0

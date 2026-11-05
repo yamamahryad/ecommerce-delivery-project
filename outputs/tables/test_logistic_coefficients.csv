@@ -1,0 +1,16 @@
+﻿feature,coefficient,abs_coefficient
+cat__customer_state_PR,-1.163,1.163
+cat__customer_state_AL,1.1415,1.1415
+cat__customer_state_MG,-1.1014,1.1014
+cat__customer_state_DF,-0.9106,0.9106
+cat__customer_state_SP,-0.8951,0.8951
+cat__primary_category_audio,0.7794,0.7794
+cat__primary_category_luggage_accessories,-0.6999,0.6999
+cat__primary_category_home_appliances,-0.6948,0.6948
+num__planned_days,-0.6859,0.6859
+cat__customer_state_MA,0.6633,0.6633
+cat__customer_state_PA,0.6592,0.6592
+cat__customer_state_SE,0.6337,0.6337
+cat__primary_category_market_place,-0.6074,0.6074
+cat__customer_state_GO,-0.5781,0.5781
+cat__customer_state_CE,0.5636,0.5636

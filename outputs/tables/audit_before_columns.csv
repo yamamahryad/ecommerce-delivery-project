@@ -1,0 +1,41 @@
+﻿table,column,dtype,n_missing,pct_missing,n_unique,example
+orders,order_id,str,0,0.0,99441,e481f51cbdc54678b7cc49136f2d6af7
+orders,customer_id,str,0,0.0,99441,9ef432eb6251297304e76186b10a928d
+orders,order_status,str,0,0.0,8,delivered
+orders,order_purchase_timestamp,str,0,0.0,98875,2017-10-02 10:56:33
+orders,order_approved_at,str,160,0.161,90733,2017-10-02 11:07:15
+orders,order_delivered_carrier_date,str,1783,1.793,81018,2017-10-04 19:55:00
+orders,order_delivered_customer_date,str,2965,2.982,95664,2017-10-10 21:25:13
+orders,order_estimated_delivery_date,str,0,0.0,459,2017-10-18 00:00:00
+customers,customer_id,str,0,0.0,99441,06b8999e2fba1a1fbc88172c00ba8bc7
+customers,customer_unique_id,str,0,0.0,96096,861eff4711a542e4b93843c6dd7febb0
+customers,customer_zip_code_prefix,str,0,0.0,14994,14409
+customers,customer_city,str,0,0.0,4119,franca
+customers,customer_state,str,0,0.0,27,SP
+order_items,order_id,str,0,0.0,98666,00010242fe8c5a6d1ba2dd792cb16214
+order_items,order_item_id,int64,0,0.0,21,1
+order_items,product_id,str,0,0.0,32951,4244733e06e7ecb4970a6e2683c13e61
+order_items,seller_id,str,0,0.0,3095,48436dade18ac8b2bce089ec2a041202
+order_items,shipping_limit_date,str,0,0.0,93318,2017-09-19 09:45:35
+order_items,price,float64,0,0.0,5968,58.9
+order_items,freight_value,float64,0,0.0,6999,13.29
+payments,order_id,str,0,0.0,99440,b81ef226f3fe1789b1e8b2acac839d17
+payments,payment_sequential,int64,0,0.0,29,1
+payments,payment_type,str,0,0.0,5,credit_card
+payments,payment_installments,int64,0,0.0,24,8
+payments,payment_value,float64,0,0.0,29077,99.33
+products,product_id,str,0,0.0,32951,1e9e8ef04dbcff4541ed26657ea517e5
+products,product_category_name,str,610,1.851,73,perfumaria
+products,product_name_lenght,float64,610,1.851,66,40.0
+products,product_description_lenght,float64,610,1.851,2960,287.0
+products,product_photos_qty,float64,610,1.851,19,1.0
+products,product_weight_g,float64,2,0.006,2204,225.0
+products,product_length_cm,float64,2,0.006,99,16.0
+products,product_height_cm,float64,2,0.006,102,10.0
+products,product_width_cm,float64,2,0.006,95,14.0
+sellers,seller_id,str,0,0.0,3095,3442f8959a84dea7ee197c632cb2df15
+sellers,seller_zip_code_prefix,str,0,0.0,2246,13023
+sellers,seller_city,str,0,0.0,611,campinas
+sellers,seller_state,str,0,0.0,23,SP
+category_translation,product_category_name,str,0,0.0,71,beleza_saude
+category_translation,product_category_name_english,str,0,0.0,71,health_beauty

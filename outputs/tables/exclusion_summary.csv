@@ -1,0 +1,10 @@
+﻿step,reason,rule,orders_excluded,orders_remaining
+0,all orders,-,0,99441
+1,not_delivered_status,order_status != 'delivered',2963,96478
+2,delivered_without_customer_date,order_delivered_customer_date is missing,8,96470
+3,missing_approval_date,order_approved_at is missing,14,96456
+4,missing_estimated_date,order_estimated_delivery_date is missing,0,96456
+5,approval_after_delivery,order_approved_at > order_delivered_customer_date,61,96395
+6,estimated_before_approval,estimated delivery day < approval day,1,96394
+7,no_items,order has no rows in order_items,0,96394
+8,no_payment_record,order has no payment record,1,96393

@@ -1,0 +1,5 @@
+﻿outcome,n,mean_proba,median_planned_days,same_state_pct,multi_seller_pct,median_items_price,mean_freight
+TP,230,0.232,13.0,29.565,0.0,94.2,30.072
+FP,3500,0.208,19.0,7.943,0.0,95.075,33.038
+FN,388,0.085,8.0,81.443,0.0,77.95,16.523
+TN,10342,0.066,18.0,50.667,2.34,79.9,22.062

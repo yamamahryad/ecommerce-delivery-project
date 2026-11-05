@@ -1,0 +1,3 @@
+﻿model,chosen_threshold,validation_f1_at_threshold
+logistic_regression,0.1259694365834799,0.21408045977011494
+hist_gradient_boosting,0.47629951666235104,0.16523235800344233

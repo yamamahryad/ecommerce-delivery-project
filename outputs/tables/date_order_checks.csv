@@ -1,0 +1,6 @@
+﻿earlier_event,later_event,rows_compared,violations,pct_violations
+order_purchase_timestamp,order_approved_at,99281,0,0.0
+order_approved_at,order_delivered_carrier_date,97644,1359,1.392
+order_delivered_carrier_date,order_delivered_customer_date,96475,23,0.024
+order_purchase_timestamp,order_delivered_customer_date,96476,0,0.0
+order_purchase_timestamp,order_estimated_delivery_date,99441,0,0.0

@@ -1,0 +1,29 @@
+﻿feature,derived,type,formula,source,why_relevant,available_at,model_input
+approval_dow,True,temporal,day of week of order_approved_at (0=Mon),orders,weekend approvals may wait for the next working day,at approval time,True
+approval_hour,True,temporal,hour of order_approved_at,orders,late-day approvals may miss the same-day dispatch,at approval time,True
+approval_month,True,temporal,month of order_approved_at,orders,captures seasonality such as holiday peaks,at approval time,True
+purchase_to_approval_hours,True,temporal,(order_approved_at - order_purchase_timestamp) in hours,orders,slow approval may signal payment or fraud checks,at approval time,True
+planned_days,True,temporal,estimated delivery day - approval day (days),orders,length of the promised delivery window,at approval time (assumption of the brief),True
+avg_item_price,True,numeric,items_price_sum / n_items (NaN if no items),order_items,average value per item,at approval time (assumption of the brief),True
+freight_share,True,numeric,freight / (price + freight),order_items,high freight share can signal heavy or distant shipments,at approval time (assumption of the brief),True
+log_weight_g,True,numeric,log1p(sum of product weights),order_items + products,heavy orders may ship differently; log reduces skew,at approval time (assumption of the brief),True
+log_volume_cm3,True,numeric,log1p(sum of length*height*width),order_items + products,bulky orders may ship differently; log reduces skew,at approval time (assumption of the brief),True
+is_multi_seller,True,relationship-derived,1 if n_sellers > 1 else 0,order_items,several sellers need several dispatches,at approval time (assumption of the brief),True
+same_state,True,relationship-derived,1 if primary seller state == customer state else 0,sellers + customers,same-state routes are shorter,at approval time (assumption of the brief),True
+state_route,True,categorical (analysis only),primary_seller_state + '>' + customer_state,sellers + customers,route-level analysis (question 2); too many levels for the model,at approval time (assumption of the brief),False
+n_items,False,numeric,count of item rows per order,order_items,order size,at approval time (assumption of the brief),True
+n_distinct_products,False,numeric,distinct product_id per order,order_items,order variety,at approval time (assumption of the brief),True
+n_sellers,False,numeric,distinct seller_id per order,order_items,multi-seller orders are handled explicitly,at approval time (assumption of the brief),True
+n_seller_states,False,numeric,distinct seller states per order,order_items + sellers,geographic spread of sellers,at approval time (assumption of the brief),True
+n_categories,False,numeric,distinct categories per order,order_items + products,order variety,at approval time (assumption of the brief),True
+items_price_sum,False,numeric,sum of price,order_items,order value,at approval time (assumption of the brief),True
+items_freight_sum,False,numeric,sum of freight_value,order_items,shipping cost,at approval time (assumption of the brief),True
+max_item_price,False,numeric,max price in order,order_items,most valuable item,at approval time (assumption of the brief),True
+n_items_missing_size,False,numeric,items with unknown weight or volume,products,warns that weight/volume totals may be incomplete,at approval time (assumption of the brief),True
+n_payment_records,False,numeric,count of payment rows,payments,split payments,at approval time (assumption of the brief),True
+n_payment_types,False,numeric,distinct payment types,payments,mixed payment methods,at approval time (assumption of the brief),True
+max_installments,False,numeric,max payment_installments,payments,financing choice,at approval time (assumption of the brief),True
+customer_state,False,categorical,customer state code,customers,destination region,at approval time,True
+primary_seller_state,False,categorical,state of the seller of the highest-priced item,order_items + sellers,origin region (multi-seller rule from day 3),at approval time (assumption of the brief),True
+primary_category,False,categorical,category of the highest-priced item,order_items + products,product type,at approval time (assumption of the brief),True
+main_payment_type,False,categorical,payment type with the largest value,payments,payment method,at approval time (assumption of the brief),True

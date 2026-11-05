@@ -1,0 +1,4 @@
+﻿model,split,mean_predicted_pct,actual_late_pct
+baseline_prior,validation,7.83,4.34
+logistic_regression,validation,7.54,4.34
+hist_gradient_boosting,validation,29.35,4.34

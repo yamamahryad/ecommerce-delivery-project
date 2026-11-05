@@ -1,0 +1,8 @@
+﻿measure,value
+eligible orders,96393.0
+late orders (delay_days > 0),6531.0
+delivered earlier than estimated (delay_days < 0),88571.0
+delivered on the estimated day (delay_days == 0),1291.0
+median delay among late orders (days),7.0
+max delay (days),188.0
+median days early among early orders,13.0

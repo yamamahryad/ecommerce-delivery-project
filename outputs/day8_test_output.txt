@@ -1,0 +1,140 @@
+﻿Selected model (frozen before the test): logistic_regression  threshold=0.1260
+Test orders: 14,460   late rate: 4.27%
+
+====================================================================================================
+1) FINAL test metrics (frozen thresholds; last row = reference rule)
+====================================================================================================
+                 model  threshold  accuracy  precision  recall     f1  average_precision  roc_auc    tn    fp  fn  tp  flagged_pct  precision_lift
+        baseline_prior     0.5000    0.9573     0.0000  0.0000 0.0000             0.0427   0.5000 13842     0 618   0       0.0000          0.0000
+   logistic_regression     0.1260    0.7311     0.0617  0.3722 0.1058             0.0730   0.6458 10342  3500 388 230      25.7953          1.4428
+hist_gradient_boosting     0.4763    0.7882     0.1035  0.5162 0.1724             0.1015   0.7345 11079  2763 299 319      21.3140          2.4218
+ reference_always_late     0.5000    0.0427     0.0427  1.0000 0.0820             0.0427   0.5000     0 13842   0 618     100.0000          1.0000
+
+====================================================================================================
+2) Calibration: mean predicted vs actual late rate (distribution shift)
+====================================================================================================
+                 model split  mean_predicted_pct  actual_late_pct
+        baseline_prior  test                7.83             4.27
+   logistic_regression  test               10.37             4.27
+hist_gradient_boosting  test               34.99             4.27
+
+====================================================================================================
+3) Test: reviewing the top k% highest-risk orders
+====================================================================================================
+ flagged_share_pct  orders_flagged  late_caught  precision_pct  recall_pct  lift                  model
+               2.0             289           35          12.11        5.66  2.83    logistic_regression
+               5.0             723           70           9.68       11.33  2.27    logistic_regression
+              10.0            1446          104           7.19       16.83  1.68    logistic_regression
+              20.0            2892          173           5.98       27.99  1.40    logistic_regression
+              30.0            4338          278           6.41       44.98  1.50    logistic_regression
+               2.0             289           43          14.88        6.96  3.48 hist_gradient_boosting
+               5.0             723           92          12.72       14.89  2.98 hist_gradient_boosting
+              10.0            1446          173          11.96       27.99  2.80 hist_gradient_boosting
+              20.0            2892          303          10.48       49.03  2.45 hist_gradient_boosting
+              30.0            4338          404           9.31       65.37  2.18 hist_gradient_boosting
+
+====================================================================================================
+4) Error analysis by approval month
+====================================================================================================
+approval_month    n  late  flagged  tp   fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+       2018-06 1944    19      198   6  192  13         0.9774      10.1852     0.0303  0.3158         False
+       2018-07 6021   193     1540  84 1456 109         3.2054      25.5771     0.0545  0.4352         False
+       2018-08 6495   406     1992 140 1852 266         6.2510      30.6697     0.0703  0.3448         False
+
+====================================================================================================
+5) Error analysis by route type
+====================================================================================================
+    route_group    n  late  flagged  tp   fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+different state 8558   234     3384 162 3222  72         2.7343      39.5419     0.0479  0.6923         False
+     same state 5902   384      346  68  278 316         6.5063       5.8624     0.1965  0.1771         False
+
+====================================================================================================
+6) Error analysis by planned delivery window
+====================================================================================================
+planned_group    n  late  flagged  tp  fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+         0-10 2950   341      615  96 519 245        11.5593      20.8475     0.1561  0.2815         False
+        11-15 3001   103      802  43 759  60         3.4322      26.7244     0.0536  0.4175         False
+        16-20 2792    69      853  40 813  29         2.4713      30.5516     0.0469  0.5797         False
+        21-25 2553    65      858  36 822  29         2.5460      33.6075     0.0420  0.5538         False
+        26-30 1668    29      456  12 444  17         1.7386      27.3381     0.0263  0.4138         False
+        31-40 1249    11      146   3 143   8         0.8807      11.6894     0.0205  0.2727         False
+          41+  247     0        0   0   0   0         0.0000       0.0000        NaN     NaN         False
+
+====================================================================================================
+7) Error analysis by seller structure
+====================================================================================================
+ seller_group     n  late  flagged  tp   fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+ multi-seller   242     0        0   0    0   0         0.0000       0.0000        NaN     NaN         False
+single seller 14218   618     3730 230 3500 388         4.3466      26.2344     0.0617  0.3722         False
+
+====================================================================================================
+8) Error analysis by customer state (10 largest)
+====================================================================================================
+customer_state    n  late  flagged  tp  fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+            SP 6729   387      481  68 413 319         5.7512       7.1482     0.1414  0.1757         False
+            RJ 1627    62      944  55 889   7         3.8107      58.0209     0.0583  0.8871         False
+            MG 1584    20      236   6 230  14         1.2626      14.8990     0.0254  0.3000         False
+            PR  741    16       95   2  93  14         2.1592      12.8205     0.0211  0.1250         False
+            RS  721    18      230   8 222  10         2.4965      31.9001     0.0348  0.4444         False
+            SC  462    10      231   4 227   6         2.1645      50.0000     0.0173  0.4000         False
+            BA  459    18      317  15 302   3         3.9216      69.0632     0.0473  0.8333         False
+            DF  355    12      101   5  96   7         3.3803      28.4507     0.0495  0.4167         False
+            GO  275     8       98   6  92   2         2.9091      35.6364     0.0612  0.7500         False
+            ES  274     9      161   6 155   3         3.2847      58.7591     0.0373  0.6667         False
+
+====================================================================================================
+9) Profile of TP / FP / FN / TN orders
+====================================================================================================
+outcome     n  mean_proba  median_planned_days  same_state_pct  multi_seller_pct  median_items_price  mean_freight
+     TP   230       0.232                 13.0          29.565              0.00              94.200        30.072
+     FP  3500       0.208                 19.0           7.943              0.00              95.075        33.038
+     FN   388       0.085                  8.0          81.443              0.00              77.950        16.523
+     TN 10342       0.066                 18.0          50.667              2.34              79.900        22.062
+
+====================================================================================================
+10) False alarms with the highest scores (FP)
+====================================================================================================
+                        order_id  proba  planned_days  same_state customer_state primary_seller_state approval_month  items_price_sum
+cf4659487be50c0c317cff3564c4a840  0.999          27.0         0.0             PB                   SP        2018-07          1050.00
+43bdbd9dc0931d72befdf4765af6c442  0.718          20.0         0.0             PB                   SC        2018-07          3089.00
+fe1a4e86595ca403c258c586e8fd99c4  0.687          13.0         0.0             RJ                   SP        2018-08           189.90
+3fde74c28a3d5d618c00f26d51baafa0  0.655          21.0         0.0             SC                   SP        2018-08          2338.08
+076d1555fb53a89b0ef4d529e527a0f6  0.619          13.0         0.0             PR                   SP        2018-08          2338.08
+65967471ea680726ad2d27368e4c4dc7  0.607          16.0         0.0             SE                   SP        2018-07           329.90
+324687cda932c3d68b91cb0fb2ea653e  0.599           9.0         0.0             RJ                   SP        2018-08           195.91
+32980a0c990d84e3f2c3e9838a4abc1d  0.573          12.0         0.0             RS                   SP        2018-08           399.00
+
+====================================================================================================
+11) Late orders with the lowest scores (FN, missed)
+====================================================================================================
+                        order_id  proba  planned_days  same_state customer_state primary_seller_state approval_month  items_price_sum
+6d05d2deb6a51438e65741cc19d715d8  0.006          28.0         1.0             PR                   PR        2018-07           135.00
+6325af88a0611fc357055cb87dcec11e  0.020          33.0         0.0             MG                   PR        2018-07            77.90
+9c3fe119bb87723856e0d807d2ddf37d  0.023          14.0         1.0             SP                   SP        2018-08           133.69
+d4e413e096efb5d9b209b28ac79c62b7  0.026          15.0         1.0             SP                   SP        2018-06            29.90
+5bfce111a3fc0a622ab552626165ab2f  0.026          29.0         1.0             SP                   SP        2018-07           139.99
+43f9a3d3e9d95525bfce717e31f72a56  0.026          18.0         1.0             RS                   RS        2018-07            69.99
+885ae5d5896b9a5f3bd2a626876ace12  0.027          21.0         1.0             SP                   SP        2018-07            70.00
+f92c4415380d5956969e7b44174a6476  0.028          28.0         0.0             MG                   PR        2018-07            25.00
+
+====================================================================================================
+12) Logistic regression: largest standardized coefficients
+====================================================================================================
+                                  feature  coefficient  abs_coefficient
+                   cat__customer_state_PR      -1.1630           1.1630
+                   cat__customer_state_AL       1.1415           1.1415
+                   cat__customer_state_MG      -1.1014           1.1014
+                   cat__customer_state_DF      -0.9106           0.9106
+                   cat__customer_state_SP      -0.8951           0.8951
+              cat__primary_category_audio       0.7794           0.7794
+cat__primary_category_luggage_accessories      -0.6999           0.6999
+    cat__primary_category_home_appliances      -0.6948           0.6948
+                        num__planned_days      -0.6859           0.6859
+                   cat__customer_state_MA       0.6633           0.6633
+                   cat__customer_state_PA       0.6592           0.6592
+                   cat__customer_state_SE       0.6337           0.6337
+       cat__primary_category_market_place      -0.6074           0.6074
+                   cat__customer_state_GO      -0.5781           0.5781
+                   cat__customer_state_CE       0.5636           0.5636
+
+Final evaluation done. Do not change the model, features or thresholds after this.

@@ -1,0 +1,8 @@
+﻿table,rows,columns,missing_cells,pct_missing_cells,fully_duplicated_rows,memory_mb
+orders,99441,8,4908,0.617,0,52.94
+customers,99441,5,0,0.0,0,30.95
+order_items,112650,7,0,0.0,0,35.99
+payments,103886,5,0,0.0,0,16.23
+products,32951,9,2448,0.825,0,6.3
+sellers,3095,4,0,0.0,0,0.72
+category_translation,71,2,0,0.0,0,0.01

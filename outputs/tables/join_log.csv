@@ -1,0 +1,6 @@
+﻿step,key,validate,left_rows,right_rows,result_rows,rows_added,left_rows_with_match,left_rows_without_match
+items + products (item level),product_id,many_to_one,112650,32951,112650,0,112650,0
+items + sellers (item level),seller_id,many_to_one,112650,3095,112650,0,112650,0
+orders + item aggregates,order_id,one_to_one,99441,98666,99441,0,98666,775
+orders + payment aggregates,order_id,one_to_one,99441,99440,99441,0,99440,1
+orders + customers,customer_id,many_to_one,99441,99441,99441,0,99441,0

@@ -1,0 +1,126 @@
+﻿
+====================================================================================================
+1) Cleaning decision log (short view; full text in the CSV)
+====================================================================================================
+               table                                                      issue  records_affected                                                                  action
+category_translation                                      fully duplicated rows                 0                                             none found, nothing removed
+              orders                                      fully duplicated rows                 0                                             none found, nothing removed
+              orders                     order_status: inconsistent spaces/case                 0                                                             none needed
+              orders             order_purchase_timestamp: dates stored as text             99441              converted to datetime with pd.to_datetime(errors='coerce')
+              orders                    order_approved_at: dates stored as text             99281              converted to datetime with pd.to_datetime(errors='coerce')
+              orders                          order_approved_at: missing values               160                                    kept as missing (NaT), no imputation
+              orders         order_delivered_carrier_date: dates stored as text             97658              converted to datetime with pd.to_datetime(errors='coerce')
+              orders               order_delivered_carrier_date: missing values              1783                                    kept as missing (NaT), no imputation
+              orders        order_delivered_customer_date: dates stored as text             96476              converted to datetime with pd.to_datetime(errors='coerce')
+              orders              order_delivered_customer_date: missing values              2965                                    kept as missing (NaT), no imputation
+              orders        order_estimated_delivery_date: dates stored as text             99441              converted to datetime with pd.to_datetime(errors='coerce')
+           customers                                      fully duplicated rows                 0                                             none found, nothing removed
+           customers                    customer_city: inconsistent spaces/case                 0                                                             none needed
+           customers                   customer_state: inconsistent spaces/case                 0                                                             none needed
+           customers customer_zip_code_prefix: zip prefix shorter than 5 digits                 0                   left-padded with zeros to 5 characters (kept as text)
+         order_items                                      fully duplicated rows                 0                                             none found, nothing removed
+         order_items                  shipping_limit_date: dates stored as text            112650              converted to datetime with pd.to_datetime(errors='coerce')
+         order_items                                                 price <= 0                 0                                                                    kept
+         order_items                                          freight_value < 0                 0                                                                    kept
+         order_items                                         freight_value == 0               383                                                                    kept
+            payments                                      fully duplicated rows                 0                                             none found, nothing removed
+            payments                                          payment_value < 0                 0                                                                    kept
+            payments                                         payment_value == 0                 9                                                                    kept
+            payments                                  payment_installments == 0                 2                                                                    kept
+            payments                              payment_type == 'not_defined'                 3                                                                    kept
+            products                                      fully duplicated rows                 0                                             none found, nothing removed
+            products                              product_category_name missing               610                                    filled with constant label 'unknown'
+            products                          product_weight_g <= 0 (illogical)                 4                                                    set to missing (NaN)
+            products                         product_length_cm <= 0 (illogical)                 0                                                              none found
+            products                         product_height_cm <= 0 (illogical)                 0                                                              none found
+            products                          product_width_cm <= 0 (illogical)                 0                                                              none found
+            products                      weight/dimensions missing (after fix)                 6                                                         kept as missing
+            products                       category without English translation                13 new column product_category_english keeps the Portuguese name for these
+             sellers                                      fully duplicated rows                 0                                             none found, nothing removed
+             sellers                      seller_city: inconsistent spaces/case                 0                                                             none needed
+             sellers                     seller_state: inconsistent spaces/case                 0                                                             none needed
+             sellers   seller_zip_code_prefix: zip prefix shorter than 5 digits                 0                   left-padded with zeros to 5 characters (kept as text)
+
+====================================================================================================
+2) Event order check (violations are counted, NOT deleted)
+====================================================================================================
+               earlier_event                   later_event  rows_compared  violations  pct_violations
+    order_purchase_timestamp             order_approved_at          99281           0           0.000
+           order_approved_at  order_delivered_carrier_date          97644        1359           1.392
+order_delivered_carrier_date order_delivered_customer_date          96475          23           0.024
+    order_purchase_timestamp order_delivered_customer_date          96476           0           0.000
+    order_purchase_timestamp order_estimated_delivery_date          99441           0           0.000
+
+====================================================================================================
+3) Order status vs presence of customer delivery date
+====================================================================================================
+order_status  no_customer_delivery_date  has_customer_delivery_date
+    approved                          2                           0
+    canceled                        619                           6
+     created                          5                           0
+   delivered                          8                       96470
+    invoiced                        314                           0
+  processing                        301                           0
+     shipped                       1107                           0
+ unavailable                        609                           0
+
+====================================================================================================
+4) Date ranges
+====================================================================================================
+      table                        column                 min                 max  all_at_midnight
+     orders      order_purchase_timestamp 2016-09-04 21:15:19 2018-10-17 17:30:18            False
+     orders             order_approved_at 2016-09-15 12:16:38 2018-09-03 17:40:06            False
+     orders  order_delivered_carrier_date 2016-10-08 10:34:01 2018-09-11 19:48:28            False
+     orders order_delivered_customer_date 2016-10-11 13:46:32 2018-10-17 13:22:46            False
+     orders order_estimated_delivery_date 2016-09-30 00:00:00 2018-11-12 00:00:00             True
+order_items           shipping_limit_date 2016-09-19 00:15:34 2020-04-09 22:35:08            False
+
+====================================================================================================
+5) Order status counts
+====================================================================================================
+order_status  n_orders
+   delivered     96478
+     shipped      1107
+    canceled       625
+ unavailable       609
+    invoiced       314
+  processing       301
+     created         5
+    approved         2
+
+====================================================================================================
+6) Categories without translation (raw data)
+====================================================================================================
+                        product_category_name  n_products
+portateis_cozinha_e_preparadores_de_alimentos          10
+                                     pc_gamer           3
+
+====================================================================================================
+7) Before vs after cleaning
+====================================================================================================
+               table  rows_before  columns_before  missing_cells_before  rows_after  columns_after  missing_cells_after  rows_removed  missing_change
+              orders        99441               8                  4908       99441              8                 4908             0               0
+           customers        99441               5                     0       99441              5                    0             0               0
+         order_items       112650               7                     0      112650              7                    0             0               0
+            payments       103886               5                     0      103886              5                    0             0               0
+            products        32951               9                  2448       32951             10                 1842             0            -606
+             sellers         3095               4                     0        3095              4                    0             0               0
+category_translation           71               2                     0          71              2                    0             0               0
+
+====================================================================================================
+8) Columns still missing values after cleaning
+====================================================================================================
+   table                        column          dtype  n_missing  pct_missing  n_unique             example
+  orders             order_approved_at datetime64[us]        160        0.161     90733 2017-10-02 11:07:15
+  orders  order_delivered_carrier_date datetime64[us]       1783        1.793     81018 2017-10-04 19:55:00
+  orders order_delivered_customer_date datetime64[us]       2965        2.982     95664 2017-10-10 21:25:13
+products           product_name_lenght        float64        610        1.851        66                40.0
+products    product_description_lenght        float64        610        1.851      2960               287.0
+products            product_photos_qty        float64        610        1.851        19                 1.0
+products              product_weight_g        float64          6        0.018      2203               225.0
+products             product_length_cm        float64          2        0.006        99                16.0
+products             product_height_cm        float64          2        0.006       102                10.0
+products              product_width_cm        float64          2        0.006        95                14.0
+
+Round-trip check passed: processed files reload with the same shapes.
+Done. Clean tables are in data/processed, documentation tables in outputs/tables.

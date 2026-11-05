@@ -1,0 +1,4 @@
+﻿feature,n_missing,pct_missing,late_rate_when_missing_pct,late_rate_when_observed_pct
+log_weight_g,22,0.023,0.0,6.78
+log_volume_cm3,16,0.017,0.0,6.78
+primary_category == 'unknown',1357,1.408,7.15,6.77

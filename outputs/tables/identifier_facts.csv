@@ -1,0 +1,12 @@
+﻿fact,value
+orders: distinct order_id (number of orders),99441
+customers: distinct customer_id,99441
+customers: distinct customer_unique_id (real people),96096
+people with more than one customer_id (repeat buyers),2997
+orders with no row in order_items,775
+orders with no payment record,1
+orders with more than one item,9803
+max items in a single order,21
+orders with more than one payment record,2961
+max payment records in a single order,29
+multi-seller orders (more than one seller_id),1278

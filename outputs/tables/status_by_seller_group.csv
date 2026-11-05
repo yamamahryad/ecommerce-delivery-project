@@ -1,0 +1,8 @@
+﻿order_status,multi_seller,single_seller
+approved,0,2
+canceled,0,461
+delivered,1275,95203
+invoiced,0,312
+processing,0,301
+shipped,2,1104
+unavailable,1,5

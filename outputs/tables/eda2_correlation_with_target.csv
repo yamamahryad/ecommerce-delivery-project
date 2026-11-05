@@ -1,0 +1,17 @@
+﻿feature,spearman_with_is_late
+same_state,-0.0676
+items_freight_sum,0.0523
+approval_month,-0.0389
+purchase_to_approval_hours,0.0315
+n_sellers,-0.0265
+is_multi_seller,-0.0265
+planned_days,-0.0253
+items_price_sum,0.024
+n_items,-0.0199
+log_weight_g,0.0164
+max_installments,0.0123
+log_volume_cm3,0.0096
+approval_dow,-0.0058
+approval_hour,-0.005
+freight_share,0.0043
+n_payment_records,-0.0023

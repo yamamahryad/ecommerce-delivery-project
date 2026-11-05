@@ -1,0 +1,5 @@
+﻿feature,median_learned_from_train,median_of_all_eligible_orders
+planned_days,24.0,23.0
+items_price_sum,85.0,86.6
+purchase_to_approval_hours,0.307,0.343
+log_weight_g,6.686,6.621

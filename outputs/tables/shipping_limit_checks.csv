@@ -1,0 +1,7 @@
+﻿measure,value
+item rows checked,112650
+limit date earlier than purchase time,0
+limit date more than 90 days after purchase,8
+min gap in days,2.0
+max gap in days,1056.04
+latest shipping_limit_date,2020-04-09 22:35:08

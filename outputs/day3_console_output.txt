@@ -1,0 +1,173 @@
+﻿
+====================================================================================================
+1) Join log: effect of every join on the number of rows
+====================================================================================================
+                         step         key    validate  left_rows  right_rows  result_rows  rows_added  left_rows_with_match  left_rows_without_match
+items + products (item level)  product_id many_to_one     112650       32951       112650           0                112650                        0
+ items + sellers (item level)   seller_id many_to_one     112650        3095       112650           0                112650                        0
+     orders + item aggregates    order_id  one_to_one      99441       98666        99441           0                 98666                      775
+  orders + payment aggregates    order_id  one_to_one      99441       99440        99441           0                 99440                        1
+           orders + customers customer_id many_to_one      99441       99441        99441           0                 99441                        0
+
+====================================================================================================
+2) Why we aggregate first: naive join of items and payments
+====================================================================================================
+             measure     correct  naive_join  naive_minus_correct
+      number of rows   112650.00   117601.00              4951.00
+        sum of price 13591643.70 14209115.34            617471.64
+sum of freight_value  2251909.54  2357428.51            105518.97
+
+====================================================================================================
+3) Validation: one row per order and correct totals
+====================================================================================================
+                                               check    expected      actual  passed
+                         rows equal number of orders    99441.00    99441.00    True
+           distinct order_id equals number of orders    99441.00    99441.00    True
+                                 no missing order_id        0.00        0.00    True
+    order_id set identical to orders table (1 = yes)        1.00        1.00    True
+                     sum of n_items equals item rows   112650.00   112650.00    True
+          sum of items_price_sum equals sum of price 13591643.70 13591643.70    True
+sum of items_freight_sum equals sum of freight_value  2251909.54  2251909.54    True
+        sum of n_payment_records equals payment rows   103886.00   103886.00    True
+sum of payment_value_sum equals sum of payment_value 16008872.12 16008872.12    True
+                                orders without items      775.00      775.00    True
+                             orders without payments        1.00        1.00    True
+                                 multi-seller orders     1278.00     1278.00    True
+
+====================================================================================================
+4) Number of sellers per order (orders with items)
+====================================================================================================
+ n_sellers  n_orders  pct_of_orders_with_items
+         1     97388                    98.705
+         2      1219                     1.235
+         3        54                     0.055
+         4         3                     0.003
+         5         2                     0.002
+
+====================================================================================================
+5) Orders without items, by status
+====================================================================================================
+order_status  n_orders_without_items
+ unavailable                     603
+    canceled                     164
+     created                       5
+    invoiced                       2
+     shipped                       1
+
+====================================================================================================
+6) Orders without payment records
+====================================================================================================
+                        order_id order_status  has_items
+bfbd0f9bdef84302105ad712db648a6c    delivered       True
+
+====================================================================================================
+7) Payment total vs items price + freight
+====================================================================================================
+                                  measure    value
+orders compared (have items and payments) 98665.00
+                       difference <= 0.01 98276.00
+         difference between 0.01 and 1.00   140.00
+                        difference > 1.00   249.00
+                  max absolute difference   182.81
+
+====================================================================================================
+8) Pivot: order status x seller group (orders with items)
+====================================================================================================
+order_status  multi_seller  single_seller
+    approved             0              2
+    canceled             0            461
+   delivered          1275          95203
+    invoiced             0            312
+  processing             0            301
+     shipped             2           1104
+ unavailable             1              5
+
+====================================================================================================
+9) shipping_limit_date check (not used as a model input)
+====================================================================================================
+                                    measure               value
+                          item rows checked              112650
+      limit date earlier than purchase time                   0
+limit date more than 90 days after purchase                   8
+                            min gap in days                 2.0
+                            max gap in days             1056.04
+                 latest shipping_limit_date 2020-04-09 22:35:08
+
+====================================================================================================
+10) Columns of the order table
+====================================================================================================
+     table                        column          dtype  n_missing  pct_missing  n_unique                          example
+order_base                      order_id            str          0        0.000     99441 e481f51cbdc54678b7cc49136f2d6af7
+order_base                   customer_id            str          0        0.000     99441 9ef432eb6251297304e76186b10a928d
+order_base                  order_status            str          0        0.000         8                        delivered
+order_base      order_purchase_timestamp datetime64[us]          0        0.000     98875              2017-10-02 10:56:33
+order_base             order_approved_at datetime64[us]        160        0.161     90733              2017-10-02 11:07:15
+order_base  order_delivered_carrier_date datetime64[us]       1783        1.793     81018              2017-10-04 19:55:00
+order_base order_delivered_customer_date datetime64[us]       2965        2.982     95664              2017-10-10 21:25:13
+order_base order_estimated_delivery_date datetime64[us]          0        0.000       459              2017-10-18 00:00:00
+order_base                       n_items        float64        775        0.779        17                              1.0
+order_base           n_distinct_products        float64        775        0.779         8                              1.0
+order_base                     n_sellers        float64        775        0.779         5                              1.0
+order_base               n_seller_states        float64        775        0.779         3                              1.0
+order_base                  n_categories        float64        775        0.779         3                              1.0
+order_base               items_price_sum        float64        775        0.779      7759                            29.99
+order_base             items_freight_sum        float64        775        0.779      8012                             8.72
+order_base                max_item_price        float64        775        0.779      5887                            29.99
+order_base          n_items_missing_size        float64        775        0.779         3                              0.0
+order_base                total_weight_g        float64        797        0.801      2896                            500.0
+order_base              total_volume_cm3        float64        791        0.795      6349                           1976.0
+order_base             primary_seller_id            str        775        0.779      3086 3504c0cb71d7fa48d967e0e4c94d59d9
+order_base          primary_seller_state            str        775        0.779        23                               SP
+order_base              primary_category            str        775        0.779        74                       housewares
+order_base             n_payment_records        float64          1        0.001        20                              3.0
+order_base               n_payment_types        float64          1        0.001         2                              2.0
+order_base             payment_value_sum        float64          1        0.001     27979                            38.71
+order_base              max_installments        float64          1        0.001        24                              1.0
+order_base             main_payment_type            str          1        0.001         5                          voucher
+order_base            customer_unique_id            str          0        0.000     96096 7c396fd4830fd04220f754e42b4e5bff
+order_base      customer_zip_code_prefix            str          0        0.000     14994                            03149
+order_base                 customer_city            str          0        0.000      4119                        sao paulo
+order_base                customer_state            str          0        0.000        27                               SP
+order_base                     has_items           bool          0        0.000         2                             True
+order_base                  has_payments           bool          0        0.000         2                             True
+
+====================================================================================================
+11) Sample of the order table (3 rows, transposed)
+====================================================================================================
+                                                              0                                 1                                 2
+order_id                       e481f51cbdc54678b7cc49136f2d6af7  53cdb2fc8bc7dce0b6741e2150273451  47770eb9100c2d0c44946d9cf07ec65d
+customer_id                    9ef432eb6251297304e76186b10a928d  b0830fb4747a6c6d20dea0b8c802d7ef  41ce2a54c0b03bf3443c3d931a367089
+order_status                                          delivered                         delivered                         delivered
+order_purchase_timestamp                    2017-10-02 10:56:33               2018-07-24 20:41:37               2018-08-08 08:38:49
+order_approved_at                           2017-10-02 11:07:15               2018-07-26 03:24:27               2018-08-08 08:55:23
+order_delivered_carrier_date                2017-10-04 19:55:00               2018-07-26 14:31:00               2018-08-08 13:50:00
+order_delivered_customer_date               2017-10-10 21:25:13               2018-08-07 15:27:45               2018-08-17 18:06:29
+order_estimated_delivery_date               2017-10-18 00:00:00               2018-08-13 00:00:00               2018-09-04 00:00:00
+n_items                                                     1.0                               1.0                               1.0
+n_distinct_products                                         1.0                               1.0                               1.0
+n_sellers                                                   1.0                               1.0                               1.0
+n_seller_states                                             1.0                               1.0                               1.0
+n_categories                                                1.0                               1.0                               1.0
+items_price_sum                                           29.99                             118.7                             159.9
+items_freight_sum                                          8.72                             22.76                             19.22
+max_item_price                                            29.99                             118.7                             159.9
+n_items_missing_size                                        0.0                               0.0                               0.0
+total_weight_g                                            500.0                             400.0                             420.0
+total_volume_cm3                                         1976.0                            4693.0                            9576.0
+primary_seller_id              3504c0cb71d7fa48d967e0e4c94d59d9  289cdb325fb7e7f891c38608bf9e0962  4869f7a5dfa277a7dca6462dcf3b52b2
+primary_seller_state                                         SP                                SP                                SP
+primary_category                                     housewares                         perfumery                              auto
+n_payment_records                                           3.0                               1.0                               1.0
+n_payment_types                                             2.0                               1.0                               1.0
+payment_value_sum                                         38.71                            141.46                            179.12
+max_installments                                            1.0                               1.0                               3.0
+main_payment_type                                       voucher                            boleto                       credit_card
+customer_unique_id             7c396fd4830fd04220f754e42b4e5bff  af07308b275d755c9edb36a90c618231  3a653a41f6f9fc3d2a113cf8398680e8
+customer_zip_code_prefix                                  03149                             47813                             75265
+customer_city                                         sao paulo                         barreiras                        vianopolis
+customer_state                                               SP                                BA                                GO
+has_items                                                  True                              True                              True
+has_payments                                               True                              True                              True
+
+All validation checks passed. Round-trip check passed.
+Order table saved: C:\Users\acer\Documents\ecommerce-delivery-project\data\processed\order_base.csv  shape=(99441, 33)

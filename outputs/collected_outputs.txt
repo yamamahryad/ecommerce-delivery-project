@@ -1,0 +1,468 @@
+
+====================================================================================================
+ENVIRONMENT
+====================================================================================================
+Python 3.14.3 on Windows 10
+numpy==2.5.4
+pandas==3.1.0
+matplotlib==3.11.2
+seaborn==0.13.2
+scikit-learn==1.9.1
+joblib==1.6.0
+pytest==9.2.0
+
+====================================================================================================
+FROZEN DECISIONS (json)
+====================================================================================================
+{
+  "threshold_criterion": "maximize F1 of the late class on the validation set",
+  "model_criterion": "highest average precision on the validation set",
+  "selected_model": "logistic_regression",
+  "thresholds": {
+    "baseline_prior": 0.5,
+    "logistic_regression": 0.1259694365834799,
+    "hist_gradient_boosting": 0.47629951666235104
+  },
+  "model_sha256": {
+    "baseline_prior": "200ea3cd14e1181e14c3c1950d8f4bad5039114650465b1ebb27f8716f45d9f1",
+    "logistic_regression": "7c33b0d5e9677e285fcfba2087d666afbbe460b00633a7e7101e58d3d9905d21",
+    "hist_gradient_boosting": "65486dba4a12bf9ad4e040ac109b2fc9f0752d84fa200b7fdb0c5a520c397dc3"
+  }
+}
+
+====================================================================================================
+TABLE: join_log
+====================================================================================================
+                         step         key    validate  left_rows  right_rows  result_rows  rows_added  left_rows_with_match  left_rows_without_match
+items + products (item level)  product_id many_to_one     112650       32951       112650           0                112650                        0
+ items + sellers (item level)   seller_id many_to_one     112650        3095       112650           0                112650                        0
+     orders + item aggregates    order_id  one_to_one      99441       98666        99441           0                 98666                      775
+  orders + payment aggregates    order_id  one_to_one      99441       99440        99441           0                 99440                        1
+           orders + customers customer_id many_to_one      99441       99441        99441           0                 99441                        0
+
+====================================================================================================
+TABLE: naive_join_demo
+====================================================================================================
+             measure     correct  naive_join  naive_minus_correct
+      number of rows   112650.00   117601.00              4951.00
+        sum of price 13591643.70 14209115.34            617471.64
+sum of freight_value  2251909.54  2357428.51            105518.97
+
+====================================================================================================
+TABLE: order_table_validation
+====================================================================================================
+                                               check    expected      actual  passed
+                         rows equal number of orders    99441.00    99441.00    True
+           distinct order_id equals number of orders    99441.00    99441.00    True
+                                 no missing order_id        0.00        0.00    True
+    order_id set identical to orders table (1 = yes)        1.00        1.00    True
+                     sum of n_items equals item rows   112650.00   112650.00    True
+          sum of items_price_sum equals sum of price 13591643.70 13591643.70    True
+sum of items_freight_sum equals sum of freight_value  2251909.54  2251909.54    True
+        sum of n_payment_records equals payment rows   103886.00   103886.00    True
+sum of payment_value_sum equals sum of payment_value 16008872.12 16008872.12    True
+                                orders without items      775.00      775.00    True
+                             orders without payments        1.00        1.00    True
+                                 multi-seller orders     1278.00     1278.00    True
+
+====================================================================================================
+TABLE: seller_count_distribution
+====================================================================================================
+ n_sellers  n_orders  pct_of_orders_with_items
+         1     97388                    98.705
+         2      1219                     1.235
+         3        54                     0.055
+         4         3                     0.003
+         5         2                     0.002
+
+====================================================================================================
+TABLE: orders_without_items_by_status
+====================================================================================================
+order_status  n_orders_without_items
+ unavailable                     603
+    canceled                     164
+     created                       5
+    invoiced                       2
+     shipped                       1
+
+====================================================================================================
+TABLE: payment_reconciliation
+====================================================================================================
+                                  measure    value
+orders compared (have items and payments) 98665.00
+                       difference <= 0.01 98276.00
+         difference between 0.01 and 1.00   140.00
+                        difference > 1.00   249.00
+                  max absolute difference   182.81
+
+====================================================================================================
+TABLE: shipping_limit_checks
+====================================================================================================
+                                    measure               value
+                          item rows checked              112650
+      limit date earlier than purchase time                   0
+limit date more than 90 days after purchase                   8
+                            min gap in days                 2.0
+                            max gap in days             1056.04
+                 latest shipping_limit_date 2020-04-09 22:35:08
+
+====================================================================================================
+TABLE: exclusion_summary
+====================================================================================================
+ step                          reason                                              rule  orders_excluded  orders_remaining
+    0                      all orders                                                 -                0             99441
+    1            not_delivered_status                       order_status != 'delivered'             2963             96478
+    2 delivered_without_customer_date          order_delivered_customer_date is missing                8             96470
+    3           missing_approval_date                      order_approved_at is missing               14             96456
+    4          missing_estimated_date          order_estimated_delivery_date is missing                0             96456
+    5         approval_after_delivery order_approved_at > order_delivered_customer_date               61             96395
+    6       estimated_before_approval             estimated delivery day < approval day                1             96394
+    7                        no_items                  order has no rows in order_items                0             96394
+    8               no_payment_record                       order has no payment record                1             96393
+
+====================================================================================================
+TABLE: target_distribution
+====================================================================================================
+ is_late  n_orders    pct
+       0     89862 93.225
+       1      6531  6.775
+
+====================================================================================================
+TABLE: delay_description
+====================================================================================================
+                                          measure   value
+                                  eligible orders 96393.0
+                     late orders (delay_days > 0)  6531.0
+delivered earlier than estimated (delay_days < 0) 88571.0
+ delivered on the estimated day (delay_days == 0)  1291.0
+            median delay among late orders (days)     7.0
+                                 max delay (days)   188.0
+             median days early among early orders    13.0
+
+====================================================================================================
+TABLE: numpy_feature_summary
+====================================================================================================
+                   feature  n_missing   min    p25  median     p75     p95       max    mean
+              planned_days          0 1.000 18.000  23.000  29.000  39.000   154.000  23.868
+purchase_to_approval_hours          0 0.000  0.215   0.343  14.456  48.128   741.444  10.195
+           items_price_sum          0 0.850 45.900  86.600 149.900 399.000 13440.000 137.058
+         items_freight_sum          0 0.000 13.850  17.180  24.030  54.804  1794.960  22.792
+             freight_share          0 0.000  0.117   0.183   0.276   0.456     0.955   0.209
+              log_weight_g         22 1.099  5.707   6.621   7.626   9.264    12.125   6.779
+            log_volume_cm3         16 5.130  7.995   8.890   9.897  11.067    14.205   8.926
+
+====================================================================================================
+TABLE: log_transform_effect
+====================================================================================================
+          column  skewness_raw  skewness_after_log1p
+  total_weight_g         6.572                 0.449
+total_volume_cm3         7.358                 0.056
+ items_price_sum         9.886                 0.286
+
+====================================================================================================
+TABLE: feature_missing_eligible
+====================================================================================================
+       feature  n_missing  pct_missing
+  log_weight_g         22        0.023
+log_volume_cm3         16        0.017
+
+====================================================================================================
+TABLE: split_summary
+====================================================================================================
+split  orders  share_pct       approved_from         approved_to  late_orders  late_rate_pct
+train   67475       70.0 2016-10-04 09:43:32 2018-04-15 23:50:13         5285          7.833
+  val   14458       15.0 2018-04-16 00:13:18 2018-06-21 09:43:02          628          4.344
+ test   14460       15.0 2018-06-21 09:43:03 2018-08-29 15:10:26          618          4.274
+
+====================================================================================================
+TABLE: experiment_log
+====================================================================================================
+                 model                                                     settings  val_average_precision  val_roc_auc  ap_lift  train_average_precision  fit_seconds  selected
+        baseline_prior                                               strategy=prior                 0.0434       0.5000    1.000                   0.0783          0.3      True
+   logistic_regression                                    C=0.01, class_weight=None                 0.1157       0.7557    2.664                   0.1918          0.8     False
+   logistic_regression                                C=0.01, class_weight=balanced                 0.1149       0.7590    2.646                   0.1889          0.9     False
+   logistic_regression                                     C=0.1, class_weight=None                 0.1263       0.7705    2.909                   0.2018          1.2     False
+   logistic_regression                                 C=0.1, class_weight=balanced                 0.1192       0.7653    2.744                   0.1930          1.2     False
+   logistic_regression                                     C=1.0, class_weight=None                 0.1280       0.7725    2.947                   0.2024          1.2     False
+   logistic_regression                                 C=1.0, class_weight=balanced                 0.1197       0.7659    2.755                   0.1932          1.4     False
+   logistic_regression                                    C=10.0, class_weight=None                 0.1286       0.7731    2.960                   0.2022          1.2      True
+   logistic_regression                                C=10.0, class_weight=balanced                 0.1197       0.7656    2.755                   0.1932          1.5     False
+hist_gradient_boosting     learning_rate=0.05, max_leaf_nodes=15, class_weight=None                 0.1007       0.7136    2.318                   0.3500          2.8     False
+hist_gradient_boosting learning_rate=0.05, max_leaf_nodes=15, class_weight=balanced                 0.1050       0.7124    2.417                   0.3226          4.0      True
+hist_gradient_boosting     learning_rate=0.05, max_leaf_nodes=31, class_weight=None                 0.0984       0.7024    2.266                   0.4238          3.4     False
+hist_gradient_boosting learning_rate=0.05, max_leaf_nodes=31, class_weight=balanced                 0.0971       0.6933    2.236                   0.3704          4.8     False
+hist_gradient_boosting      learning_rate=0.1, max_leaf_nodes=15, class_weight=None                 0.0958       0.7065    2.205                   0.4021          2.4     False
+hist_gradient_boosting  learning_rate=0.1, max_leaf_nodes=15, class_weight=balanced                 0.1037       0.7062    2.388                   0.3595          3.7     False
+hist_gradient_boosting      learning_rate=0.1, max_leaf_nodes=31, class_weight=None                 0.0932       0.6958    2.145                   0.5244          3.2     False
+hist_gradient_boosting  learning_rate=0.1, max_leaf_nodes=31, class_weight=balanced                 0.0992       0.6803    2.283                   0.4520          4.5     False
+
+====================================================================================================
+TABLE: imputation_statistics_check
+====================================================================================================
+                   feature  median_learned_from_train  median_of_all_eligible_orders
+              planned_days                     24.000                         23.000
+           items_price_sum                     85.000                         86.600
+purchase_to_approval_hours                      0.307                          0.343
+              log_weight_g                      6.686                          6.621
+
+====================================================================================================
+TABLE: val_threshold_choice
+====================================================================================================
+                 model  chosen_threshold  validation_f1_at_threshold
+   logistic_regression            0.1260                      0.2141
+hist_gradient_boosting            0.4763                      0.1652
+
+====================================================================================================
+TABLE: val_model_selection
+====================================================================================================
+                 model  val_average_precision
+   logistic_regression                 0.1286
+hist_gradient_boosting                 0.1050
+
+====================================================================================================
+TABLE: val_metrics
+====================================================================================================
+                 model      split  threshold  accuracy  precision  recall     f1  average_precision  roc_auc    tn    fp  fn  tp  flagged_pct  precision_lift  late_rate_pct
+        baseline_prior validation     0.5000    0.9566     0.0000  0.0000 0.0000             0.0434   0.5000 13830     0 628   0       0.0000          0.0000         4.3436
+   logistic_regression validation     0.1260    0.8487     0.1382  0.4745 0.2141             0.1286   0.7731 11972  1858 330 298      14.9122          3.1821         4.3436
+hist_gradient_boosting validation     0.4763    0.8658     0.1132  0.3057 0.1652             0.1050   0.7124 12326  1504 436 192      11.7305          2.6063         4.3436
+ reference_always_late validation     0.5000    0.0434     0.0434  1.0000 0.0833             0.0434   0.5000     0 13830   0 628     100.0000          1.0000         4.3436
+
+====================================================================================================
+TABLE: val_topk
+====================================================================================================
+ flagged_share_pct  orders_flagged  late_caught  precision_pct  recall_pct  lift                  model
+               2.0             289           51          17.65        8.12  4.06    logistic_regression
+               5.0             723          134          18.53       21.34  4.27    logistic_regression
+              10.0            1446          215          14.87       34.24  3.42    logistic_regression
+              20.0            2892          344          11.89       54.78  2.74    logistic_regression
+              30.0            4337          432           9.96       68.79  2.29    logistic_regression
+               2.0             289           48          16.61        7.64  3.82 hist_gradient_boosting
+               5.0             723          102          14.11       16.24  3.25 hist_gradient_boosting
+              10.0            1446          166          11.48       26.43  2.64 hist_gradient_boosting
+              20.0            2892          270           9.34       42.99  2.15 hist_gradient_boosting
+              30.0            4337          373           8.60       59.39  1.98 hist_gradient_boosting
+
+====================================================================================================
+TABLE: val_calibration
+====================================================================================================
+                 model      split  mean_predicted_pct  actual_late_pct
+        baseline_prior validation                7.83             4.34
+   logistic_regression validation                7.54             4.34
+hist_gradient_boosting validation               29.35             4.34
+
+====================================================================================================
+TABLE: test_metrics
+====================================================================================================
+                 model split  threshold  accuracy  precision  recall     f1  average_precision  roc_auc    tn    fp  fn  tp  flagged_pct  precision_lift  late_rate_pct
+        baseline_prior  test     0.5000    0.9573     0.0000  0.0000 0.0000             0.0427   0.5000 13842     0 618   0       0.0000          0.0000         4.2739
+   logistic_regression  test     0.1260    0.7311     0.0617  0.3722 0.1058             0.0730   0.6458 10342  3500 388 230      25.7953          1.4428         4.2739
+hist_gradient_boosting  test     0.4763    0.7882     0.1035  0.5162 0.1724             0.1015   0.7345 11079  2763 299 319      21.3140          2.4218         4.2739
+ reference_always_late  test     0.5000    0.0427     0.0427  1.0000 0.0820             0.0427   0.5000     0 13842   0 618     100.0000          1.0000         4.2739
+
+====================================================================================================
+TABLE: test_calibration
+====================================================================================================
+                 model split  mean_predicted_pct  actual_late_pct
+        baseline_prior  test                7.83             4.27
+   logistic_regression  test               10.37             4.27
+hist_gradient_boosting  test               34.99             4.27
+
+====================================================================================================
+TABLE: test_topk
+====================================================================================================
+ flagged_share_pct  orders_flagged  late_caught  precision_pct  recall_pct  lift                  model
+               2.0             289           35          12.11        5.66  2.83    logistic_regression
+               5.0             723           70           9.68       11.33  2.27    logistic_regression
+              10.0            1446          104           7.19       16.83  1.68    logistic_regression
+              20.0            2892          173           5.98       27.99  1.40    logistic_regression
+              30.0            4338          278           6.41       44.98  1.50    logistic_regression
+               2.0             289           43          14.88        6.96  3.48 hist_gradient_boosting
+               5.0             723           92          12.72       14.89  2.98 hist_gradient_boosting
+              10.0            1446          173          11.96       27.99  2.80 hist_gradient_boosting
+              20.0            2892          303          10.48       49.03  2.45 hist_gradient_boosting
+              30.0            4338          404           9.31       65.37  2.18 hist_gradient_boosting
+
+====================================================================================================
+TABLE: test_error_by_month
+====================================================================================================
+approval_month    n  late  flagged  tp   fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+       2018-06 1944    19      198   6  192  13         0.9774      10.1852     0.0303  0.3158         False
+       2018-07 6021   193     1540  84 1456 109         3.2054      25.5771     0.0545  0.4352         False
+       2018-08 6495   406     1992 140 1852 266         6.2510      30.6697     0.0703  0.3448         False
+
+====================================================================================================
+TABLE: test_error_by_route
+====================================================================================================
+    route_group    n  late  flagged  tp   fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+different state 8558   234     3384 162 3222  72         2.7343      39.5419     0.0479  0.6923         False
+     same state 5902   384      346  68  278 316         6.5063       5.8624     0.1965  0.1771         False
+
+====================================================================================================
+TABLE: test_error_by_planned_window
+====================================================================================================
+planned_group    n  late  flagged  tp  fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+         0-10 2950   341      615  96 519 245        11.5593      20.8475     0.1561  0.2815         False
+        11-15 3001   103      802  43 759  60         3.4322      26.7244     0.0536  0.4175         False
+        16-20 2792    69      853  40 813  29         2.4713      30.5516     0.0469  0.5797         False
+        21-25 2553    65      858  36 822  29         2.5460      33.6075     0.0420  0.5538         False
+        26-30 1668    29      456  12 444  17         1.7386      27.3381     0.0263  0.4138         False
+        31-40 1249    11      146   3 143   8         0.8807      11.6894     0.0205  0.2727         False
+          41+  247     0        0   0   0   0         0.0000       0.0000        NaN     NaN         False
+
+====================================================================================================
+TABLE: test_error_by_seller_structure
+====================================================================================================
+ seller_group     n  late  flagged  tp   fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+ multi-seller   242     0        0   0    0   0         0.0000       0.0000        NaN     NaN         False
+single seller 14218   618     3730 230 3500 388         4.3466      26.2344     0.0617  0.3722         False
+
+====================================================================================================
+TABLE: test_error_by_customer_state
+====================================================================================================
+customer_state    n  late  flagged  tp  fp  fn  late_rate_pct  flagged_pct  precision  recall  small_sample
+            SP 6729   387      481  68 413 319         5.7512       7.1482     0.1414  0.1757         False
+            RJ 1627    62      944  55 889   7         3.8107      58.0209     0.0583  0.8871         False
+            MG 1584    20      236   6 230  14         1.2626      14.8990     0.0254  0.3000         False
+            PR  741    16       95   2  93  14         2.1592      12.8205     0.0211  0.1250         False
+            RS  721    18      230   8 222  10         2.4965      31.9001     0.0348  0.4444         False
+            SC  462    10      231   4 227   6         2.1645      50.0000     0.0173  0.4000         False
+            BA  459    18      317  15 302   3         3.9216      69.0632     0.0473  0.8333         False
+            DF  355    12      101   5  96   7         3.3803      28.4507     0.0495  0.4167         False
+            GO  275     8       98   6  92   2         2.9091      35.6364     0.0612  0.7500         False
+            ES  274     9      161   6 155   3         3.2847      58.7591     0.0373  0.6667         False
+
+====================================================================================================
+TABLE: test_outcome_profile
+====================================================================================================
+outcome     n  mean_proba  median_planned_days  same_state_pct  multi_seller_pct  median_items_price  mean_freight
+     TP   230       0.232                 13.0          29.565              0.00              94.200        30.072
+     FP  3500       0.208                 19.0           7.943              0.00              95.075        33.038
+     FN   388       0.085                  8.0          81.443              0.00              77.950        16.523
+     TN 10342       0.066                 18.0          50.667              2.34              79.900        22.062
+
+====================================================================================================
+TABLE: test_worst_false_positives
+====================================================================================================
+                        order_id  proba  planned_days  same_state customer_state primary_seller_state approval_month  items_price_sum
+cf4659487be50c0c317cff3564c4a840  0.999          27.0         0.0             PB                   SP        2018-07          1050.00
+43bdbd9dc0931d72befdf4765af6c442  0.718          20.0         0.0             PB                   SC        2018-07          3089.00
+fe1a4e86595ca403c258c586e8fd99c4  0.687          13.0         0.0             RJ                   SP        2018-08           189.90
+3fde74c28a3d5d618c00f26d51baafa0  0.655          21.0         0.0             SC                   SP        2018-08          2338.08
+076d1555fb53a89b0ef4d529e527a0f6  0.619          13.0         0.0             PR                   SP        2018-08          2338.08
+65967471ea680726ad2d27368e4c4dc7  0.607          16.0         0.0             SE                   SP        2018-07           329.90
+324687cda932c3d68b91cb0fb2ea653e  0.599           9.0         0.0             RJ                   SP        2018-08           195.91
+32980a0c990d84e3f2c3e9838a4abc1d  0.573          12.0         0.0             RS                   SP        2018-08           399.00
+
+====================================================================================================
+TABLE: test_worst_false_negatives
+====================================================================================================
+                        order_id  proba  planned_days  same_state customer_state primary_seller_state approval_month  items_price_sum
+6d05d2deb6a51438e65741cc19d715d8  0.006          28.0         1.0             PR                   PR        2018-07           135.00
+6325af88a0611fc357055cb87dcec11e  0.020          33.0         0.0             MG                   PR        2018-07            77.90
+9c3fe119bb87723856e0d807d2ddf37d  0.023          14.0         1.0             SP                   SP        2018-08           133.69
+d4e413e096efb5d9b209b28ac79c62b7  0.026          15.0         1.0             SP                   SP        2018-06            29.90
+5bfce111a3fc0a622ab552626165ab2f  0.026          29.0         1.0             SP                   SP        2018-07           139.99
+43f9a3d3e9d95525bfce717e31f72a56  0.026          18.0         1.0             RS                   RS        2018-07            69.99
+885ae5d5896b9a5f3bd2a626876ace12  0.027          21.0         1.0             SP                   SP        2018-07            70.00
+f92c4415380d5956969e7b44174a6476  0.028          28.0         0.0             MG                   PR        2018-07            25.00
+
+====================================================================================================
+TABLE: test_logistic_coefficients
+====================================================================================================
+                                  feature  coefficient  abs_coefficient
+                   cat__customer_state_PR      -1.1630           1.1630
+                   cat__customer_state_AL       1.1415           1.1415
+                   cat__customer_state_MG      -1.1014           1.1014
+                   cat__customer_state_DF      -0.9106           0.9106
+                   cat__customer_state_SP      -0.8951           0.8951
+              cat__primary_category_audio       0.7794           0.7794
+cat__primary_category_luggage_accessories      -0.6999           0.6999
+    cat__primary_category_home_appliances      -0.6948           0.6948
+                        num__planned_days      -0.6859           0.6859
+                   cat__customer_state_MA       0.6633           0.6633
+                   cat__customer_state_PA       0.6592           0.6592
+                   cat__customer_state_SE       0.6337           0.6337
+       cat__primary_category_market_place      -0.6074           0.6074
+                   cat__customer_state_GO      -0.5781           0.5781
+                   cat__customer_state_CE       0.5636           0.5636
+
+====================================================================================================
+FIGURES FOUND
+====================================================================================================
+erd_tables.png
+fig01_monthly_orders_and_late_rate.png
+fig02_late_rate_by_customer_state.png
+fig03_route_heatmap.png
+fig04_seller_structure_and_route.png
+fig05_late_rate_by_category.png
+fig06_late_rate_by_order_size.png
+fig07_target_distribution.png
+fig08_planned_days_histogram.png
+fig09_boxplots_by_outcome.png
+fig10_planned_days_scatter.png
+fig11_correlation_heatmap.png
+fig12_exclusion_impact.png
+fig13_threshold_selection_validation.png
+fig14_pr_curves_test.png
+fig15_confusion_matrices_test.png
+fig16_score_distribution_test.png
+fig17_error_by_month_test.png
+
+====================================================================================================
+PROCESSED FILES (name, size in MB)
+====================================================================================================
+data\processed\category_translation_clean.csv  0.00
+data\processed\customers_clean.csv  8.69
+data\processed\modeling_table.csv  28.72
+data\processed\models\baseline_prior.joblib  0.01
+data\processed\models\hist_gradient_boosting.joblib  0.40
+data\processed\models\logistic_regression.joblib  0.01
+data\processed\order_base.csv  36.20
+data\processed\order_features.csv  51.28
+data\processed\order_items_clean.csv  15.02
+data\processed\orders_clean.csv  16.61
+data\processed\payments_clean.csv  5.74
+data\processed\products_clean.csv  3.29
+data\processed\sellers_clean.csv  0.17
+data\processed\test_predictions.csv  1.39
+data\processed\val_predictions.csv  1.37
+
+====================================================================================================
+GIT LOG (oneline)
+====================================================================================================
+10c3651 data: add raw Olist tables (unmodified)
+a76dd1d chore: initialize project structure, requirements and gitignore
+
+====================================================================================================
+GIT TAGS
+====================================================================================================
+
+
+====================================================================================================
+GIT COMMITS PER AUTHOR
+====================================================================================================
+2	mohammad
+
+====================================================================================================
+PYTEST (summary)
+====================================================================================================
+........................................................................ [ 86%]
+...........                                                              [100%]
+============================== warnings summary ===============================
+tests/test_eda.py::test_real_denominators_add_up
+tests/test_features.py::test_tiny_eligibility_and_reasons
+tests/test_features.py::test_tiny_target_values_and_excluded_have_no_target
+tests/test_features.py::test_tiny_exclusion_summary_adds_up
+tests/test_features.py::test_feature_values_on_known_example
+tests/test_features.py::test_features_do_not_depend_on_forbidden_columns
+tests/test_features.py::test_features_do_not_depend_on_forbidden_columns
+  C:\Users\acer\Documents\ecommerce-delivery-project\src\features.py:56: Pandas4Warning: Series.dt.dayofweek is deprecated and will be removed in a future version. Use Series.dt.day_of_week instead.
+    df["approval_dow"] = approved.dt.dayofweek            # 0 = الاثنين
+
+tests/test_eda_part2.py::test_real_part2_figures_created
+  C:\Users\acer\Documents\ecommerce-delivery-project\.venv\Lib\site-packages\seaborn\matrix.py:243: PendingDeprecationWarning: The set_bad function will be deprecated in a future version. Use cmap.with_extremes(bad=...) or Colormap(bad=...) instead.
+    self.cmap.set_bad(bad)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+83 passed, 8 warnings in 12.09s

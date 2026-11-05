@@ -1,0 +1,38 @@
+﻿table,issue,records_affected,action,reason
+category_translation,fully duplicated rows,0,"none found, nothing removed",Only rows identical in ALL columns are treated as duplicates
+orders,fully duplicated rows,0,"none found, nothing removed",Only rows identical in ALL columns are treated as duplicates
+orders,order_status: inconsistent spaces/case,0,none needed,Same city/state must have one spelling to group correctly
+orders,order_purchase_timestamp: dates stored as text,99441,converted to datetime with pd.to_datetime(errors='coerce'),Needed for time arithmetic; values that failed to parse: 0
+orders,order_approved_at: dates stored as text,99281,converted to datetime with pd.to_datetime(errors='coerce'),Needed for time arithmetic; values that failed to parse: 0
+orders,order_approved_at: missing values,160,"kept as missing (NaT), no imputation",A missing date means the event did not happen or was not recorded; eligibility is decided when the target is defined
+orders,order_delivered_carrier_date: dates stored as text,97658,converted to datetime with pd.to_datetime(errors='coerce'),Needed for time arithmetic; values that failed to parse: 0
+orders,order_delivered_carrier_date: missing values,1783,"kept as missing (NaT), no imputation",A missing date means the event did not happen or was not recorded; eligibility is decided when the target is defined
+orders,order_delivered_customer_date: dates stored as text,96476,converted to datetime with pd.to_datetime(errors='coerce'),Needed for time arithmetic; values that failed to parse: 0
+orders,order_delivered_customer_date: missing values,2965,"kept as missing (NaT), no imputation",A missing date means the event did not happen or was not recorded; eligibility is decided when the target is defined
+orders,order_estimated_delivery_date: dates stored as text,99441,converted to datetime with pd.to_datetime(errors='coerce'),Needed for time arithmetic; values that failed to parse: 0
+customers,fully duplicated rows,0,"none found, nothing removed",Only rows identical in ALL columns are treated as duplicates
+customers,customer_city: inconsistent spaces/case,0,none needed,Same city/state must have one spelling to group correctly
+customers,customer_state: inconsistent spaces/case,0,none needed,Same city/state must have one spelling to group correctly
+customers,customer_zip_code_prefix: zip prefix shorter than 5 digits,0,left-padded with zeros to 5 characters (kept as text),Leading zeros can be lost in the source; text keeps the code intact
+order_items,fully duplicated rows,0,"none found, nothing removed",Only rows identical in ALL columns are treated as duplicates
+order_items,shipping_limit_date: dates stored as text,112650,converted to datetime with pd.to_datetime(errors='coerce'),Needed for time arithmetic; values that failed to parse: 0
+order_items,price <= 0,0,kept,"Counted only; none expected. Any case would be reviewed, not silently removed"
+order_items,freight_value < 0,0,kept,Counted only; none expected
+order_items,freight_value == 0,383,kept,"Free shipping is plausible, so it is not an error"
+payments,fully duplicated rows,0,"none found, nothing removed",Only rows identical in ALL columns are treated as duplicates
+payments,payment_value < 0,0,kept,Counted only; none expected
+payments,payment_value == 0,9,kept,"Rare rows; they add 0 to the order total, so sums are unaffected"
+payments,payment_installments == 0,2,kept,Illogical value (at least 1 installment expected) but rare; payment_installments may be handled when features are built
+payments,payment_type == 'not_defined',3,kept,Treated as its own payment type category
+products,fully duplicated rows,0,"none found, nothing removed",Only rows identical in ALL columns are treated as duplicates
+products,product_category_name missing,610,filled with constant label 'unknown',610 products miss all four descriptive columns together. The numeric descriptive columns stay missing; they are imputed later on training data only
+products,product_weight_g <= 0 (illogical),4,set to missing (NaN),A physical product cannot have zero/negative size; imputation is done later on training data only
+products,product_length_cm <= 0 (illogical),0,none found,A physical product cannot have zero/negative size; imputation is done later on training data only
+products,product_height_cm <= 0 (illogical),0,none found,A physical product cannot have zero/negative size; imputation is done later on training data only
+products,product_width_cm <= 0 (illogical),0,none found,A physical product cannot have zero/negative size; imputation is done later on training data only
+products,weight/dimensions missing (after fix),6,kept as missing,To be imputed with training statistics in the model pipeline
+products,category without English translation,13,new column product_category_english keeps the Portuguese name for these,"Distinct untranslated categories: ['pc_gamer', 'portateis_cozinha_e_preparadores_de_alimentos']. The raw translation table is not modified"
+sellers,fully duplicated rows,0,"none found, nothing removed",Only rows identical in ALL columns are treated as duplicates
+sellers,seller_city: inconsistent spaces/case,0,none needed,Same city/state must have one spelling to group correctly
+sellers,seller_state: inconsistent spaces/case,0,none needed,Same city/state must have one spelling to group correctly
+sellers,seller_zip_code_prefix: zip prefix shorter than 5 digits,0,left-padded with zeros to 5 characters (kept as text),Leading zeros can be lost in the source; text keeps the code intact

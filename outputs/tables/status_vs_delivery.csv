@@ -1,0 +1,9 @@
+﻿order_status,no_customer_delivery_date,has_customer_delivery_date
+approved,2,0
+canceled,619,6
+created,5,0
+delivered,8,96470
+invoiced,314,0
+processing,301,0
+shipped,1107,0
+unavailable,609,0

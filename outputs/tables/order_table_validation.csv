@@ -1,0 +1,13 @@
+﻿check,expected,actual,passed
+rows equal number of orders,99441.0,99441.0,True
+distinct order_id equals number of orders,99441.0,99441.0,True
+no missing order_id,0.0,0.0,True
+order_id set identical to orders table (1 = yes),1.0,1.0,True
+sum of n_items equals item rows,112650.0,112650.0,True
+sum of items_price_sum equals sum of price,13591643.7,13591643.7,True
+sum of items_freight_sum equals sum of freight_value,2251909.54,2251909.54,True
+sum of n_payment_records equals payment rows,103886.0,103886.0,True
+sum of payment_value_sum equals sum of payment_value,16008872.12,16008872.12,True
+orders without items,775.0,775.0,True
+orders without payments,1.0,1.0,True
+multi-seller orders,1278.0,1278.0,True

@@ -1,0 +1,3 @@
+﻿route_group,n,late,flagged,tp,fp,fn,late_rate_pct,flagged_pct,precision,recall,small_sample
+different state,8558,234,3384,162,3222,72,2.7343,39.5419,0.0479,0.6923,False
+same state,5902,384,346,68,278,316,6.5063,5.8624,0.1965,0.1771,False

@@ -1,0 +1,4 @@
+﻿measure,correct,naive_join,naive_minus_correct
+number of rows,112650.0,117601.0,4951.0
+sum of price,13591643.7,14209115.34,617471.64
+sum of freight_value,2251909.54,2357428.51,105518.97

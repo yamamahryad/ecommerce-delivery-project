@@ -1,0 +1,3 @@
+﻿seller_group,n,late,flagged,tp,fp,fn,late_rate_pct,flagged_pct,precision,recall,small_sample
+multi-seller,242,0,0,0,0,0,0.0,0.0,,,False
+single seller,14218,618,3730,230,3500,388,4.3466,26.2344,0.0617,0.3722,False

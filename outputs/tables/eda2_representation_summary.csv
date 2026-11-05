@@ -1,0 +1,8 @@
+﻿measure,all_orders,eligible_orders,difference
+orders,99441.0,96393.0,-3048.0
+share of customers in SP (%),41.981,41.947,-0.034
+multi-seller share among orders with items (%),1.295,1.321,0.025
+same-state share among orders with items (%),35.948,35.927,-0.021
+median items price sum,86.9,86.6,-0.3
+median planned days,23.0,23.0,0.0
+mean number of items,1.142,1.142,0.0

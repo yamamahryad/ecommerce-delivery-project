@@ -1,0 +1,50 @@
+﻿
+====================================================================================================
+1) Chosen thresholds (maximize F1 on VALIDATION)
+====================================================================================================
+                 model  chosen_threshold  validation_f1_at_threshold
+   logistic_regression            0.1260                      0.2141
+hist_gradient_boosting            0.4763                      0.1652
+
+====================================================================================================
+2) Model selection (highest validation average precision)
+====================================================================================================
+                 model  val_average_precision
+   logistic_regression                 0.1286
+hist_gradient_boosting                 0.1050
+
+====================================================================================================
+3) Validation metrics at the chosen thresholds
+====================================================================================================
+                 model  threshold  accuracy  precision  recall     f1  average_precision    tn    fp  fn  tp  flagged_pct  precision_lift
+        baseline_prior     0.5000    0.9566     0.0000  0.0000 0.0000             0.0434 13830     0 628   0       0.0000          0.0000
+   logistic_regression     0.1260    0.8487     0.1382  0.4745 0.2141             0.1286 11972  1858 330 298      14.9122          3.1821
+hist_gradient_boosting     0.4763    0.8658     0.1132  0.3057 0.1652             0.1050 12326  1504 436 192      11.7305          2.6063
+ reference_always_late     0.5000    0.0434     0.0434  1.0000 0.0833             0.0434     0 13830   0 628     100.0000          1.0000
+
+====================================================================================================
+4) Validation: reviewing the top k% highest-risk orders
+====================================================================================================
+ flagged_share_pct  orders_flagged  late_caught  precision_pct  recall_pct  lift                  model
+               2.0             289           51          17.65        8.12  4.06    logistic_regression
+               5.0             723          134          18.53       21.34  4.27    logistic_regression
+              10.0            1446          215          14.87       34.24  3.42    logistic_regression
+              20.0            2892          344          11.89       54.78  2.74    logistic_regression
+              30.0            4337          432           9.96       68.79  2.29    logistic_regression
+               2.0             289           48          16.61        7.64  3.82 hist_gradient_boosting
+               5.0             723          102          14.11       16.24  3.25 hist_gradient_boosting
+              10.0            1446          166          11.48       26.43  2.64 hist_gradient_boosting
+              20.0            2892          270           9.34       42.99  2.15 hist_gradient_boosting
+              30.0            4337          373           8.60       59.39  1.98 hist_gradient_boosting
+
+====================================================================================================
+5) Validation calibration: mean predicted vs actual late rate
+====================================================================================================
+                 model      split  mean_predicted_pct  actual_late_pct
+        baseline_prior validation                7.83             4.34
+   logistic_regression validation                7.54             4.34
+hist_gradient_boosting validation               29.35             4.34
+
+SELECTED MODEL (decided before the test set is touched): logistic_regression
+
+Decisions frozen in frozen_decisions.json. Next: python run_day8_test.py

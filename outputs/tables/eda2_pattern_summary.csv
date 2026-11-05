@@ -1,0 +1,9 @@
+﻿pattern,group_a,n_a,rate_a_pct,group_b,n_b,rate_b_pct,difference_pp,intervals_overlap
+Purchase month (highest vs lowest),2018-03,7003,18.96,2016-10,265,0.75,18.21,False
+"Customer state (highest vs lowest, n >= 200)",AL,397,21.41,RO,243,2.88,18.53,False
+Route type,different state,61762,8.05,same state,34631,4.51,3.54,False
+Planned delivery window (highest vs lowest group),0-10,4651,10.0,41+,3601,2.19,7.8,False
+Seller structure,multi-seller,1273,1.02,single seller,95120,6.85,-5.83,False
+Items value (quintiles),Q5 highest,19278,7.49,Q1 lowest,19433,5.9,1.59,False
+"Product category (highest vs lowest, top 20 by size)",baby,2756,8.13,pet_shop,1681,5.06,3.07,False
+Number of items,1 item,86766,6.94,4+ items,937,5.23,1.71,True

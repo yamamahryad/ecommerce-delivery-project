@@ -1,0 +1,146 @@
+﻿
+====================================================================================================
+1) Exclusions: one reason per order, in priority order
+====================================================================================================
+ step                          reason                                              rule  orders_excluded  orders_remaining
+    0                      all orders                                                 -                0             99441
+    1            not_delivered_status                       order_status != 'delivered'             2963             96478
+    2 delivered_without_customer_date          order_delivered_customer_date is missing                8             96470
+    3           missing_approval_date                      order_approved_at is missing               14             96456
+    4          missing_estimated_date          order_estimated_delivery_date is missing                0             96456
+    5         approval_after_delivery order_approved_at > order_delivered_customer_date               61             96395
+    6       estimated_before_approval             estimated delivery day < approval day                1             96394
+    7                        no_items                  order has no rows in order_items                0             96394
+    8               no_payment_record                       order has no payment record                1             96393
+
+====================================================================================================
+2) Order status x exclusion reason
+====================================================================================================
+order_status  approval_after_delivery  delivered_without_customer_date  eligible  estimated_before_approval  missing_approval_date  no_payment_record  not_delivered_status
+    approved                        0                                0         0                          0                      0                  0                     2
+    canceled                        0                                0         0                          0                      0                  0                   625
+     created                        0                                0         0                          0                      0                  0                     5
+   delivered                       61                                8     96393                          1                     14                  1                     0
+    invoiced                        0                                0         0                          0                      0                  0                   314
+  processing                        0                                0         0                          0                      0                  0                   301
+     shipped                        0                                0         0                          0                      0                  0                  1107
+ unavailable                        0                                0         0                          0                      0                  0                   609
+
+====================================================================================================
+3) Target distribution among eligible orders
+====================================================================================================
+ is_late  n_orders    pct
+       0     89862 93.225
+       1      6531  6.775
+
+====================================================================================================
+4) Descriptive: delay in days (analysis only, NOT a model input)
+====================================================================================================
+                                          measure   value
+                                  eligible orders 96393.0
+                     late orders (delay_days > 0)  6531.0
+delivered earlier than estimated (delay_days < 0) 88571.0
+ delivered on the estimated day (delay_days == 0)  1291.0
+            median delay among late orders (days)     7.0
+                                 max delay (days)   188.0
+             median days early among early orders    13.0
+
+====================================================================================================
+5) Feature dictionary (short view; full text in the CSV)
+====================================================================================================
+                   feature  derived                        type  model_input                               available_at
+              approval_dow     True                    temporal         True                           at approval time
+             approval_hour     True                    temporal         True                           at approval time
+            approval_month     True                    temporal         True                           at approval time
+purchase_to_approval_hours     True                    temporal         True                           at approval time
+              planned_days     True                    temporal         True at approval time (assumption of the brief)
+            avg_item_price     True                     numeric         True at approval time (assumption of the brief)
+             freight_share     True                     numeric         True at approval time (assumption of the brief)
+              log_weight_g     True                     numeric         True at approval time (assumption of the brief)
+            log_volume_cm3     True                     numeric         True at approval time (assumption of the brief)
+           is_multi_seller     True        relationship-derived         True at approval time (assumption of the brief)
+                same_state     True        relationship-derived         True at approval time (assumption of the brief)
+               state_route     True categorical (analysis only)        False at approval time (assumption of the brief)
+                   n_items    False                     numeric         True at approval time (assumption of the brief)
+       n_distinct_products    False                     numeric         True at approval time (assumption of the brief)
+                 n_sellers    False                     numeric         True at approval time (assumption of the brief)
+           n_seller_states    False                     numeric         True at approval time (assumption of the brief)
+              n_categories    False                     numeric         True at approval time (assumption of the brief)
+           items_price_sum    False                     numeric         True at approval time (assumption of the brief)
+         items_freight_sum    False                     numeric         True at approval time (assumption of the brief)
+            max_item_price    False                     numeric         True at approval time (assumption of the brief)
+      n_items_missing_size    False                     numeric         True at approval time (assumption of the brief)
+         n_payment_records    False                     numeric         True at approval time (assumption of the brief)
+           n_payment_types    False                     numeric         True at approval time (assumption of the brief)
+          max_installments    False                     numeric         True at approval time (assumption of the brief)
+            customer_state    False                 categorical         True                           at approval time
+      primary_seller_state    False                 categorical         True at approval time (assumption of the brief)
+          primary_category    False                 categorical         True at approval time (assumption of the brief)
+         main_payment_type    False                 categorical         True at approval time (assumption of the brief)
+
+====================================================================================================
+6) Missing values in model features (eligible orders only)
+====================================================================================================
+       feature  n_missing  pct_missing
+  log_weight_g         22        0.023
+log_volume_cm3         16        0.017
+
+====================================================================================================
+7) NumPy summary (nanpercentile / nanmean)
+====================================================================================================
+                   feature  n_missing   min    p25  median     p75     p95       max    mean
+              planned_days          0 1.000 18.000  23.000  29.000  39.000   154.000  23.868
+purchase_to_approval_hours          0 0.000  0.215   0.343  14.456  48.128   741.444  10.195
+           items_price_sum          0 0.850 45.900  86.600 149.900 399.000 13440.000 137.058
+         items_freight_sum          0 0.000 13.850  17.180  24.030  54.804  1794.960  22.792
+             freight_share          0 0.000  0.117   0.183   0.276   0.456     0.955   0.209
+              log_weight_g         22 1.099  5.707   6.621   7.626   9.264    12.125   6.779
+            log_volume_cm3         16 5.130  7.995   8.890   9.897  11.067    14.205   8.926
+
+====================================================================================================
+8) Effect of log1p on skewness (why we transform)
+====================================================================================================
+          column  skewness_raw  skewness_after_log1p
+  total_weight_g         6.572                 0.449
+total_volume_cm3         7.358                 0.056
+ items_price_sum         9.886                 0.286
+
+====================================================================================================
+9) Sample of the modeling table (3 rows, transposed)
+====================================================================================================
+                                                           0                                 1                                 2
+order_id                    e481f51cbdc54678b7cc49136f2d6af7  53cdb2fc8bc7dce0b6741e2150273451  47770eb9100c2d0c44946d9cf07ec65d
+customer_unique_id          7c396fd4830fd04220f754e42b4e5bff  af07308b275d755c9edb36a90c618231  3a653a41f6f9fc3d2a113cf8398680e8
+order_purchase_timestamp                 2017-10-02 10:56:33               2018-07-24 20:41:37               2018-08-08 08:38:49
+order_approved_at                        2017-10-02 11:07:15               2018-07-26 03:24:27               2018-08-08 08:55:23
+approval_dow                                             0.0                               3.0                               2.0
+approval_hour                                           11.0                               3.0                               8.0
+approval_month                                          10.0                               7.0                               8.0
+purchase_to_approval_hours                          0.178333                         30.713889                          0.276111
+planned_days                                            16.0                              18.0                              27.0
+n_items                                                  1.0                               1.0                               1.0
+n_distinct_products                                      1.0                               1.0                               1.0
+n_sellers                                                1.0                               1.0                               1.0
+n_seller_states                                          1.0                               1.0                               1.0
+n_categories                                             1.0                               1.0                               1.0
+items_price_sum                                        29.99                             118.7                             159.9
+items_freight_sum                                       8.72                             22.76                             19.22
+max_item_price                                         29.99                             118.7                             159.9
+avg_item_price                                         29.99                             118.7                             159.9
+freight_share                                       0.225265                          0.160894                          0.107302
+log_weight_g                                        6.216606                          5.993961                          6.042633
+log_volume_cm3                                      7.589336                           8.45404                           9.16712
+n_items_missing_size                                     0.0                               0.0                               0.0
+is_multi_seller                                          0.0                               0.0                               0.0
+same_state                                               1.0                               0.0                               0.0
+n_payment_records                                        3.0                               1.0                               1.0
+n_payment_types                                          2.0                               1.0                               1.0
+max_installments                                         1.0                               1.0                               3.0
+customer_state                                            SP                                BA                                GO
+primary_seller_state                                      SP                                SP                                SP
+primary_category                                  housewares                         perfumery                              auto
+main_payment_type                                    voucher                            boleto                       credit_card
+is_late                                                    0                                 0                                 0
+
+Round-trip check passed.
+Full table: (99441, 50)  Modeling table: (96393, 32)
