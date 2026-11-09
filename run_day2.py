@@ -57,7 +57,7 @@ def main():
     column_audit_after.to_csv(config.TABLES_DIR / "audit_after_columns.csv",
                               index=False, encoding="utf-8-sig")
 
-    # حفظ الجداول النظيفة ثم إعادة قراءتها للتأكد من سلامة الحفظ
+    # .حفظ الجداول النظيفة ثم إعادة قراءتها للتأكد من سلامة الحفظ
     save_clean_tables(clean)
     reloaded = load_clean_tables()
     for name in clean:
