@@ -2,7 +2,7 @@
 # يبني جدول الطلب الواحد ويتحقق منه: python run_day3.py
 # يتطلب تشغيل run_day2.py أولاً (لأنه يقرأ الجداول النظيفة من data/processed).
 
-import numpy as np  # noqa: F401  (تستخدمه دوال التحليل، وللتذكير بالمكتبة المطلوبة)
+import numpy as np  # noqa: F401  (تستخدمه دوال التحليل، وذلك للتذكير بالمكتبة المطلوبة)
 import pandas as pd
 
 from src import config
